@@ -28,7 +28,7 @@ def read_GPIO():
     GPIO.setwarnings(False)
 
     # Define pin number
-    GPIO_PIN = 18
+    GPIO_PIN = 17
 
     # Set up the GPIO pin as an input
     GPIO.setup(GPIO_PIN, GPIO.IN)
