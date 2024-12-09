@@ -7,8 +7,8 @@ sys.path.append("lib")
 
 from arduino_iot_cloud import ArduinoCloudClient
 
-DEVICE_ID =  "0bdff59d-04b9-44a8-89b1-2c1ecc24dbc4"
-SECRET_KEY =  "ekcJUSH37kQhdZC049T8uckGc"
+DEVICE_ID =  ""
+SECRET_KEY =  ""
 
 def logging_func():
     logging.basicConfig(
