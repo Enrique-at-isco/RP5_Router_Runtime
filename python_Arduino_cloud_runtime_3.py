@@ -65,12 +65,15 @@ def monitor_signal():
     is_blinking = read_pin_17()
     start_time = time.time()
     while True:
+        signals=[]
         for i in range(50):
-            signals=[]
+            
             signal = read_pin_17()  # Read the current signal from the photoresistor
             signals.append(signal)
         sum_of_signals = sum(signals)
         if sum_of_signals>=1: is_blinking = True 
+        else: is_blinking =False
+        signals.clear()
         
         current_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))
 
