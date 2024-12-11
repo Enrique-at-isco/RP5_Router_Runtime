@@ -11,7 +11,7 @@ sys.path.append("lib")
 
 from arduino_iot_cloud import ArduinoCloudClient
 from secret import DEVICE_ID, SECRET_KEY
-from machine_state import 
+import machine_stats
 
 # Threshold for deciding when the light is on or off
 THRESHOLD = 500  # Adjust based on sensor readings, this is an example
@@ -85,7 +85,9 @@ def monitor_signal():
                     write_to_csv(1, current_time, blinking_duration)  # Log blinking state
                 start_time = time.time()  # Reset the timer
             is_blinking = False
+        
 
+        time_elapsed = calculate_total_times('data')
         # Sleep for a short time to simulate continuous monitoring (adjust as needed)
         time.sleep(1)
 
@@ -104,10 +106,55 @@ def read_pin_17():
         client["Photoresistor_17"] = value
         client["is_on"]= bool(value)
         client["is_off"] = not bool(value)
+        calculate_total_times('data')
         client.update()
         #return pin_number
-        line.release()
         return value
+        line.release()
+        
+
+# this function calculates the total runtime and downtime during a day and sends that data to ardiuno cloud       
+def calculate_total_times(folder_path):
+    # Get today's date in YYYY-MM-DD format
+    today_date = datetime.today().strftime('%Y_%m_%d')
+    
+    # Create the CSV file path (combine folder path and today's date as the filename)
+    csv_file_path = os.path.join(folder_path, f'{today_date}.csv')
+    
+    # Check if the file exists
+    if not os.path.exists(csv_file_path):
+        print(f"No file found for {today_date}.")
+        return
+    
+    # Initialize variables for total on and off times
+    total_on_time = 0.0
+    total_off_time = 0.0
+    
+    # Open the CSV file and read the data
+    with open(csv_file_path, mode='r') as file:
+        reader = csv.reader(file)
+        
+        # Skip the header row
+        next(reader)
+        
+        # Iterate through each row and sum the times based on the state
+        for row in reader:
+            state = int(row[0])  # State (0 or 1)
+            duration = float(row[2])  # Duration in seconds
+            
+            if state == 1:
+                total_on_time += duration
+                total_on_time_formatted = total_on_time/(60)
+            elif state == 0:
+                total_off_time += duration
+                total_off_time_formatted = total_off_time/(60)
+    
+    # Print the results
+    print(f"Total On Time for {today_date}: {total_on_time:.2f} seconds")
+    print(f"Total Off Time for {today_date}: {total_off_time:.2f} seconds")
+    client["todays_runtime"] = total_on_time_formatted
+    client["todays_downtime"] = total_off_time_formatted
+
 
 
 
@@ -119,6 +166,11 @@ if __name__ == "__main__":
     client.register("Photoresistor_17")
     client.register("is_on")
     client.register("is_off")
+
+    client.register("todays_runtime")
+    client.register("todays_downtime")
+
     client.start()
     read_pin_17()
+
         

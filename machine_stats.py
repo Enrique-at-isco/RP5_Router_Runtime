@@ -4,7 +4,7 @@ from datetime import datetime
 
 def calculate_total_times(folder_path):
     # Get today's date in YYYY-MM-DD format
-    today_date = datetime.today().strftime('%Y-%m-%d')
+    today_date = datetime.today().strftime('%Y_%m_%d')
     
     # Create the CSV file path (combine folder path and today's date as the filename)
     csv_file_path = os.path.join(folder_path, f'{today_date}.csv')
@@ -32,8 +32,10 @@ def calculate_total_times(folder_path):
             
             if state == 1:
                 total_on_time += duration
+                total_on_time_formatted = total_on_time/(120)
             elif state == 0:
                 total_off_time += duration
+                total_off_time_formatted = total_off_time/(120)
     
     # Print the results
     print(f"Total On Time for {today_date}: {total_on_time:.2f} seconds")
@@ -43,5 +45,5 @@ def calculate_total_times(folder_path):
     return total_times
 
 # Example usage
-folder = '/path/to/your/folder'  # Replace with the correct folder path
+folder = 'data'  # Replace with the correct folder path
 calculate_total_times(folder)
