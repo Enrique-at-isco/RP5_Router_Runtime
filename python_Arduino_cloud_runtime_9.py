@@ -108,13 +108,13 @@ def monitor_signal(sampling_interval=0.1,blink_threshold_on=0.8, blink_threshold
         # If the LED is on for more than the threshold, classify it as "On"
         elif on_duration >= blink_threshold_on:
             #write_to_csv(change,2,current_time,state_duration)
-            state = 2
+            state = 0
             client["is_Running"]= True    
             #return f"On (Duration: {state_duration:.2f} seconds)"
 
         # If the LED is off for more than the threshold, classify it as "Off"
         elif off_duration >= blink_threshold_off:
-            state = 0
+            state = 2
             #write_to_csv(change, 0,current_time,state_duration)
             client["is_Running"]= False
             #return f"Off (Duration: {state_duration:.2f} seconds)"
